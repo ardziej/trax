@@ -16,7 +16,7 @@ class TripController extends Controller
     public function index(): JsonResponse
     {
         $tripsResourceCollection = TripResource::collection(
-            $this->tripService->getTripsByUserId(1)
+            $this->tripService->getTripsByUserId(request()->user()->id)
         );
 
         return $this->successResponse(data: $tripsResourceCollection->resolve());
@@ -25,7 +25,7 @@ class TripController extends Controller
     public function store(StoreTripRequest $request): JsonResponse
     {
         $tripsResource = new TripResource(
-            $this->tripService->createTrip([...$request->validated(), 'user_id' => 1])
+            $this->tripService->createTrip([...$request->validated(), 'user_id' => request()->user()->id])
         );
 
         return $this->successResponse(data: $tripsResource->resolve(), code: 201);

@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
+use App\Models\Car;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
@@ -11,80 +15,70 @@ class CarTest extends TestCase
     use RefreshDatabase;
     use WithoutMiddleware;
 
-    public function test_asserting_an_exact_json_match_for_get_cars(): void
+    public function test_get_cars(): void
     {
-        $response = $this->get('/api/mock-get-cars');
+        $user = User::factory()->create();
+        $this->be($user, 'api');
+        $cars = Car::factory()->for($user)->count(10)->create();
 
-        $response->assertStatus(200)
-                 ->assertExactJson(
-                     [
-                         'data' => [
-                             [
-                                 'id'    => 1,
-                                 'make'  => 'Land Rover',
-                                 'model' => 'Range Rover Sport',
-                                 'year'  => 2017
-                             ],
-                             [
-                                 'id'    => 2,
-                                 'make'  => 'Ford',
-                                 'model' => 'F150',
-                                 'year'  => 2014
-                             ],
-                             [
-                                 'id'    => 3,
-                                 'make'  => 'Chevy',
-                                 'model' => 'Tahoe',
-                                 'year'  => 2015
-                             ],
-                             [
-                                 'id'    => 4,
-                                 'make'  => 'Aston Martin',
-                                 'model' => 'Vanquish',
-                                 'year'  => 2018
-                             ]
-                         ]
-                     ]
-                 );
+        $response = $this->getJson(route('cars.index'));
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(
+                [
+                    'success' => true,
+                ]
+            );
     }
 
-    public function test_asserting_an_exact_json_match_for_get_car_by_id(): void
+    public function test_get_car_by_id(): void
     {
-        $response = $this->get('/api/mock-get-car/1');
+        $user = User::factory()->create();
+        $this->be($user, 'api');
+        $cars = Car::factory()->for($user)->count(10)->create();
 
-        $response->assertStatus(200)
-                 ->assertExactJson(
-                     [
-                         'data' => [
-                             'id'         => 1,
-                             'make'       => 'Land Rover',
-                             'model'      => 'Range Rover Sport',
-                             'year'       => 2017,
-                             'trip_count' => 2,
-                             'trip_miles' => 18.1
-                         ]
-                     ]
-                 );
+        $response = $this->getJson(route('cars.show', ['car' => $cars->first()->id]));
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(
+                [
+                    'success' => true,
+                ]
+            );
     }
 
     public function test_create_car(): void
     {
-        $response = $this->post(
-            '/api/mock-add-car',
-            [
-                'year'  => 2022,
-                'make'  => 'make',
-                'model' => 'model'
-            ]
+        $user = User::factory()->create();
+        $this->be($user, 'api');
+
+        $car      = Car::factory()->for($user)->create();
+        $response = $this->postJson(
+            route('cars.store'),
+            $car->toArray(),
         );
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(201)
+            ->assertJson(
+                [
+                    'success' => true,
+                ]
+            );
     }
 
     public function test_delete_car_by_id(): void
     {
-        $response = $this->delete('/api/mock-delete-car/1');
+        $user = User::factory()->create();
+        $this->be($user, 'api');
 
-        $response->assertStatus(200);
+        $car      = Car::factory()->for($user)->create();
+        $response = $this->deleteJson(
+            route('cars.destroy', ['car' => $car->id]),
+        );
+
+        $response->assertStatus(204);
     }
 }

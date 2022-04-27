@@ -15,7 +15,7 @@ class CarController extends Controller
 
     public function index(): JsonResponse
     {
-        $carsResourceCollection = CarResource::collection($this->carService->getCarsByUserId(1));
+        $carsResourceCollection = CarResource::collection($this->carService->getCarsByUserId(request()->user()->id));
 
         return $this->successResponse(data: $carsResourceCollection->resolve());
     }
