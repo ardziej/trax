@@ -1,7 +1,10 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -22,7 +25,7 @@
     },
     "autoload": {
         "classmap": [
-            "database/seeds",
+            "database/seeders",
             "database/factories"
         ],
         "psr-4": {
