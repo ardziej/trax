@@ -25,10 +25,14 @@ final class CarService implements CarServiceInterface
         return Car::create($data);
     }
 
-    public function deleteCarById(int $carId): bool
+    public function deleteCarById(int $carId, ?int $userId = null): bool
     {
-        $deleteQuery = Car::query()->where('id', $carId)->delete();
+        $deleteQuery = Car::query()->where('id', $carId);
 
-        return $deleteQuery > 0;
+        if ($userId) {
+            $deleteQuery->where('user_id', $userId);
+        }
+
+        return $deleteQuery->delete() > 0;
     }
 }

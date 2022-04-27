@@ -15,5 +15,5 @@ interface CarServiceInterface
 
     public function createCar(array $data): Car;
 
-    public function deleteCarById(int $carId): bool;
+    public function deleteCarById(int $carId, ?int $userId = null): bool;
 }
