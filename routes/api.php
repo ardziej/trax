@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CarController;
+use App\Http\Controllers\API\TripController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -177,3 +178,4 @@ Route::post('mock-add-trip', function (Request $request) {
 })->middleware('auth:api');
 
 Route::apiResource('cars', CarController::class)->except(['update']);
+Route::apiResource('trips', TripController::class)->only(['index', 'store']);
