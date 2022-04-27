@@ -78,3 +78,16 @@ docker-compose exec workspace npm run watch
 Commit your changes locally and when finished, publish your repo on your public bitbucket or github account.
 
 **GOOD LUCK!**
+
+---
+### Testing
+
+```
+cp .env.example .env.testing
+```
+
+Change database credentials for testing and run tests
+
+```
+composer test
+```
